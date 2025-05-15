@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script>
+      class Contact {
+        constructor(id, name, phoneNumber, email = "", address = "") {
+          this.id = id;
+          this.name = name;
+          this.phoneNumber = phoneNumber;
+          this.email = email;
+          this.address = address;
+        }
+
+        update({ name, phoneNumber, email, address }) {
+          if (name) this.name = name;
+          if (phoneNumber) this.phoneNumber = phoneNumber;
+          if (email) this.email = email;
+          if (address) this.address = address;
+        }
+
+        display() {
+          console.log(
+            `ID: ${this.id} | Name: ${this.name} | Phone: ${this.phoneNumber} | Email: ${this.email} | Address: ${this.address}`
+          );
+        }
+      }
+
+      class PhoneBook {
+        constructor() {
+          this.contacts = new Map();
+          this.nextId = 1;
+        }
+
+        addContact(name, phoneNumber, email, address) {
+          const contact = new Contact(
+            this.nextId++,
+            name,
+            phoneNumber,
+            email,
+            address
+          );
+          this.contacts.set(contact.id, contact);
+          console.log(`✅ Contact '${name}' added with ID: ${contact.id}`);
+          return contact;
+        }
+
+        getContactById(id) {
+          return this.contacts.get(id) || null;
+        }
+
+        updateContact(id, updatedFields) {
+          const contact = this.getContactById(id);
+          if (!contact) {
+            console.log(`❌ Contact with ID ${id} not found`);
+            return null;
+          }
+          contact.update(updatedFields);
+          console.log(`🔄 Contact with ID ${id} updated`);
+          return contact;
+        }
+
+        deleteContact(id) {
+          if (this.contacts.delete(id)) {
+            console.log(`🗑️ Contact with ID ${id} deleted`);
+          } else {
+            console.log(`❌ Contact with ID ${id} not found`);
+          }
+        }
+
+        searchByName(query) {
+          const results = Array.from(this.contacts.values()).filter((contact) =>
+            contact.name.toLowerCase().includes(query.toLowerCase())
+          );
+
+          if (results.length === 0) {
+            console.log(`❌ No contacts found for "${query}"`);
+          } else {
+            console.log(`🔍 Search results for "${query}":`);
+            results.forEach((contact) => contact.display());
+          }
+          return results;
+        }
+
+        listAllContacts() {
+          if (this.contacts.size === 0) {
+            console.log("📭 Phone book is empty");
+            return;
+          }
+
+          console.log("📒 All Contacts:");
+          this.contacts.forEach((contact) => contact.display());
+        }
+      }
+      const myPhoneBook = new PhoneBook();
+
+      myPhoneBook.addContact(
+        "Himanshu",
+        "1234567890",
+        "himanshu@mail.com",
+        "Noida"
+      );
+      myPhoneBook.addContact("Riya", "9876543210", "riya@mail.com", "Delhi");
+
+      myPhoneBook.listAllContacts();
+
+      myPhoneBook.updateContact(1, {
+        email: "new_himanshu@mail.com",
+        address: "Greater Noida",
+      });
+
+      myPhoneBook.searchByName("Riya");
+
+      myPhoneBook.deleteContact(2);
+      myPhoneBook.listAllContacts();
+    </script>
+  </head>
+  <body></body>
+</html>
